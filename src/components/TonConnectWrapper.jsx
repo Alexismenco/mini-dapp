@@ -5,7 +5,7 @@ export default function App() {
 
   useEffect(() => {
     const tonConnectUI = new window.TON_CONNECT_UI.TonConnectUI({
-      manifestUrl: 'https://mini-dapp-pi.vercel.app/tonconnect-manifest.json',
+      manifestUrl: 'https://www.tonpulse.fun/tonconnect-manifest.json',
       buttonRootId: 'ton-connect-button'
     });
 
