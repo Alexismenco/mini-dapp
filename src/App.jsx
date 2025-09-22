@@ -54,7 +54,7 @@ function App() {
 
   useEffect(() => {
     const tonConnectInstance = new TonConnectUI({
-      manifestUrl: 'https://ton-connect.vercel.app/tonconnect-manifest.json',
+      manifestUrl: 'https://mini-dapp-pi.vercel.app/tonconnect-manifest.json',
     });
 
     tonConnectInstance.onStatusChange((walletInfo) => {

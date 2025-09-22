@@ -1,5 +1,5 @@
 {
-  "url": "http://localhost:5173",
+  "url": "https://mini-dapp-pi.vercel.app/",
   "name": "TON Token Creator",
-  "iconUrl": "http://localhost:5173/icon.png"
+  "iconUrl": "https://mini-dapp-pi.vercel.app//icon.png"
 }
