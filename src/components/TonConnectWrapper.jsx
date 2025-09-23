@@ -21,6 +21,8 @@ export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeplo
       });
 
       console.log("✅ Contrato desplegado:", tx);
+      console.log("Wallet address que se enviará:", walletAddress);
+
 
       onDeployed({
         txHash: tx.boc,

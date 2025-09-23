@@ -100,7 +100,7 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
         {wallet && !paymentConfirmed && tonConnectUI && (
           <TonConnectWrapper
             tonConnectUI={tonConnectUI}
-            walletAddress={wallet} // ⚠️ pasamos wallet real
+            walletAddress={wallet.account.address} // ⚠️ pasamos wallet real
             onDeployed={handleDeployed}
           />
         )}
