@@ -1,8 +1,6 @@
-import TonWeb from 'tonweb';
-
 export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeployed }) {
-  // ⚡ Payload compilado de tu smart contract en base64
-  const CONTRACT_CODE_B64 = "BASE64_REAL_DEL_CONTRATO";
+  // ⚡ Payload compilado de tu smart contract
+  const CONTRACT_CODE_B64 = "BASE64_CODE_DEL_CONTRATO";
 
   const deployContract = async () => {
     if (!tonConnectUI || !walletAddress) {
@@ -11,27 +9,28 @@ export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeplo
     }
 
     try {
-      // Convertimos el payload a bytes para que TON Connect lo acepte
-      const payloadBytes = Uint8Array.from(atob(CONTRACT_CODE_B64), c => c.charCodeAt(0));
-
       const tx = await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutos
+        validUntil: Math.floor(Date.now() / 1000) + 300,
         messages: [
           {
-            address: walletAddress,
-            amount: "2000000000", // nanoTON
-            payload: btoa(String.fromCharCode(...payloadBytes)), // payload en base64 compatible navegador
+            address: walletAddress, // enviamos a nuestra propia wallet
+            amount: "2000000000",  // nanoTON para gas
+            payload: CONTRACT_CODE_B64,
           },
         ],
       });
 
       console.log("✅ Contrato desplegado:", tx);
 
+      console.log("Wallet address que se enviará:", walletAddress);
+
       onDeployed({
         txHash: tx.boc,
         contractAddress: tx.address || "0:SIMULADO",
       });
     } catch (err) {
+      console.log("Wallet address que se enviará:", walletAddress);
+
       console.error("❌ Error al desplegar:", err);
     }
   };

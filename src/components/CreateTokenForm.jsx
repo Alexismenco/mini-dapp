@@ -27,6 +27,8 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
     if (error) console.error(error);
   };
 
+          console.log('mi wallettttt ', walletAddress)
+
   const handleDeployed = ({ txHash, contractAddress }) => {
     setTxHash(txHash);
     setContractAddress(contractAddress);
@@ -47,6 +49,7 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+
       <input
         className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonPurple text-white focus:ring-2 focus:ring-neonPurple"
         placeholder="Símbolo (ej: TON)"
@@ -54,6 +57,7 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
         onChange={(e) => setSymbol(e.target.value.toUpperCase())}
         maxLength={10}
       />
+
       <input
         type="number"
         min="1"
@@ -63,6 +67,7 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
         value={supply}
         onChange={(e) => setSupply(e.target.value.replace(/[^0-9]/g, ''))}
       />
+
       <input
         type="number"
         min="0"
@@ -94,10 +99,11 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
 
       {/* Botón / estado */}
       <div className="flex flex-col items-center">
+        
         {wallet && !paymentConfirmed && tonConnectUI && (
           <TonConnectWrapper
             tonConnectUI={tonConnectUI}
-            walletAddress={wallet} // mainnet wallet
+            walletAddress={wallet} // ⚠️ pasamos wallet real
             onDeployed={handleDeployed}
           />
         )}
