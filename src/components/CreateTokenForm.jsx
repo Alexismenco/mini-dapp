@@ -27,7 +27,7 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
     if (error) console.error(error);
   };
 
-          console.log('mi wallettttt ', wallet)
+          console.log('mi wallettttt ', walletAddress)
 
   const handleDeployed = ({ txHash, contractAddress }) => {
     setTxHash(txHash);
