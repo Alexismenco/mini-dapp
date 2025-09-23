@@ -1,28 +1,50 @@
 pragma ton-solidity >=0.47.0;
 
 contract UserToken {
+    // Metadata
     string public name;
     string public symbol;
     uint8 public decimals;
     uint128 public totalSupply;
+
+    // Balances
     mapping(address => uint128) balances;
 
-    constructor(string _name, string _symbol, uint8 _decimals, uint128 _supply) public {
+    // Eventos (logs)
+    event Transfer(address indexed from, address indexed to, uint128 value);
+
+    constructor(
+        string _name,
+        string _symbol,
+        uint8 _decimals,
+        uint128 _supply
+    ) public {
+        // Seguridad: solo el public key que firma puede crear
+        require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
+
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
         totalSupply = _supply;
+
+        // Asignar supply inicial al creador
         balances[msg.sender] = _supply;
     }
 
+    // Balance de un usuario
     function balanceOf(address owner) public view returns (uint128) {
         return balances[owner];
     }
 
+    // Transferencia entre cuentas
     function transfer(address to, uint128 value) public {
         require(balances[msg.sender] >= value, 101);
+        tvm.accept();
+
         balances[msg.sender] -= value;
         balances[to] += value;
+
+        emit Transfer(msg.sender, to, value);
     }
 }
