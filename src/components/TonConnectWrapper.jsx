@@ -1,6 +1,8 @@
+import TonWeb from 'tonweb';
+
 export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeployed }) {
-  // ⚡ Payload compilado de tu smart contract
-  const CONTRACT_CODE_B64 = "BASE64_CODE_DEL_CONTRATO";
+  // ⚡ Reemplaza con tu contrato compilado en base64 para mainnet
+  const CONTRACT_CODE_B64 = "BASE64_REAL_DEL_CONTRATO";
 
   const deployContract = async () => {
     if (!tonConnectUI || !walletAddress) {
@@ -9,12 +11,13 @@ export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeplo
     }
 
     try {
+      // Construimos la transacción
       const tx = await tonConnectUI.sendTransaction({
-        validUntil: Math.floor(Date.now() / 1000) + 300,
+        validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutos de validez
         messages: [
           {
             address: walletAddress, // enviamos a nuestra propia wallet
-            amount: "2000000000",  // nanoTON para gas
+            amount: "2000000000",   // nanoTON para gas, ajustar según contrato
             payload: CONTRACT_CODE_B64,
           },
         ],
@@ -22,15 +25,13 @@ export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeplo
 
       console.log("✅ Contrato desplegado:", tx);
 
-      console.log("Wallet address que se enviará:", walletAddress);
-
+      // Avisamos al componente padre
       onDeployed({
         txHash: tx.boc,
         contractAddress: tx.address || "0:SIMULADO",
       });
-    } catch (err) {
-      console.log("Wallet address que se enviará:", walletAddress);
 
+    } catch (err) {
       console.error("❌ Error al desplegar:", err);
     }
   };
