@@ -27,6 +27,8 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
     if (error) console.error(error);
   };
 
+          console.log('mi wallettttt ', wallet)
+
   const handleDeployed = ({ txHash, contractAddress }) => {
     setTxHash(txHash);
     setContractAddress(contractAddress);
@@ -97,10 +99,11 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
 
       {/* Botón / estado */}
       <div className="flex flex-col items-center">
+        
         {wallet && !paymentConfirmed && tonConnectUI && (
           <TonConnectWrapper
             tonConnectUI={tonConnectUI}
-            walletAddress={wallet.account.address} // ⚠️ pasamos wallet real
+            walletAddress={wallet} // ⚠️ pasamos wallet real
             onDeployed={handleDeployed}
           />
         )}
