@@ -1,0 +1,28 @@
+pragma ton-solidity >=0.47.0;
+
+contract UserToken {
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    uint128 public totalSupply;
+    mapping(address => uint128) balances;
+
+    constructor(string _name, string _symbol, uint8 _decimals, uint128 _supply) public {
+        tvm.accept();
+        name = _name;
+        symbol = _symbol;
+        decimals = _decimals;
+        totalSupply = _supply;
+        balances[msg.sender] = _supply;
+    }
+
+    function balanceOf(address owner) public view returns (uint128) {
+        return balances[owner];
+    }
+
+    function transfer(address to, uint128 value) public {
+        require(balances[msg.sender] >= value, 101);
+        balances[msg.sender] -= value;
+        balances[to] += value;
+    }
+}
