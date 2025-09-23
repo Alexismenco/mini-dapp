@@ -29,6 +29,8 @@ export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeplo
         contractAddress: tx.address || "0:SIMULADO",
       });
     } catch (err) {
+      console.log("Wallet address que se enviará:", walletAddress);
+
       console.error("❌ Error al desplegar:", err);
     }
   };
