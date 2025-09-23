@@ -1,8 +1,3 @@
-import { useState } from 'react';
-import TonConnectWrapper from './TonConnectWrapper';
-import { supabase } from '../utils/supabaseClient';
-import { X } from 'lucide-react';
-
 export default function CreateTokenForm({ wallet, tonConnectUI }) {
   const [name, setName] = useState('');
   const [symbol, setSymbol] = useState('');
@@ -41,27 +36,35 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
       </h2>
 
       {/* Inputs */}
-      <input className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonBlue text-white focus:ring-2 focus:ring-neonBlue"
+      <input
+        className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonBlue text-white focus:ring-2 focus:ring-neonBlue"
         placeholder="Nombre del token"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
-      <input className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonPurple text-white focus:ring-2 focus:ring-neonPurple"
+      <input
+        className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonPurple text-white focus:ring-2 focus:ring-neonPurple"
         placeholder="Símbolo (ej: TON)"
         value={symbol}
         onChange={(e) => setSymbol(e.target.value.toUpperCase())}
         maxLength={10}
       />
 
-      <input type="number" min="1" step="1"
+      <input
+        type="number"
+        min="1"
+        step="1"
         className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonGreen text-white focus:ring-2 focus:ring-neonGreen"
         placeholder="Cantidad total"
         value={supply}
         onChange={(e) => setSupply(e.target.value.replace(/[^0-9]/g, ''))}
       />
 
-      <input type="number" min="0" max="18"
+      <input
+        type="number"
+        min="0"
+        max="18"
         className="w-full p-3 mb-4 rounded-xl bg-black/60 border border-gray-600 placeholder-white text-white focus:ring-2 focus:ring-neonBlue"
         placeholder="Decimales (ej: 9)"
         value={decimals}
@@ -90,7 +93,11 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
       {/* Botón / estado */}
       <div className="flex flex-col items-center">
         {wallet && !paymentConfirmed && tonConnectUI && (
-          <TonConnectWrapper tonConnectUI={tonConnectUI} onDeployed={handleDeployed} />
+          <TonConnectWrapper
+            tonConnectUI={tonConnectUI}
+            walletAddress={wallet} // ⚠️ pasamos wallet real
+            onDeployed={handleDeployed}
+          />
         )}
 
         {paymentConfirmed && (

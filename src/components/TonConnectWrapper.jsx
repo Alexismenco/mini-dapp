@@ -1,35 +1,35 @@
-export default function TonConnectWrapper({ tonConnectUI, onDeployed }) {
-  // ⚡ Aquí deberías poner el payload compilado de tu smart contract
+export default function TonConnectWrapper({ tonConnectUI, walletAddress, onDeployed }) {
+  // ⚡ Payload compilado de tu smart contract
   const CONTRACT_CODE_B64 = "BASE64_CODE_DEL_CONTRATO";
 
-const deployContract = async () => {
-  if (!tonConnectUI) return;
+  const deployContract = async () => {
+    if (!tonConnectUI || !walletAddress) {
+      console.error("TonConnectUI o walletAddress no definido");
+      return;
+    }
 
-  try {
-    // Debes usar tu propia dirección de wallet aquí
-    const walletAddress = await tonConnectUI.getAddress(); // dirección de tu wallet conectada
+    try {
+      const tx = await tonConnectUI.sendTransaction({
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        messages: [
+          {
+            address: walletAddress, // enviamos a nuestra propia wallet
+            amount: "2000000000",  // nanoTON para gas
+            payload: CONTRACT_CODE_B64,
+          },
+        ],
+      });
 
-    const tx = await tonConnectUI.sendTransaction({
-      validUntil: Math.floor(Date.now() / 1000) + 300,
-      messages: [
-        {
-          address: walletAddress, // ⚠️ enviamos a nuestra propia wallet
-          amount: "2000000000",
-          payload: CONTRACT_CODE_B64,
-        },
-      ],
-    });
+      console.log("✅ Contrato desplegado:", tx);
 
-    console.log("✅ Contrato desplegado:", tx);
-
-    onDeployed({
-      txHash: tx.boc,
-      contractAddress: tx.address || "0:SIMULADO",
-    });
-  } catch (err) {
-    console.error("❌ Error al desplegar:", err);
-  }
-};
+      onDeployed({
+        txHash: tx.boc,
+        contractAddress: tx.address || "0:SIMULADO",
+      });
+    } catch (err) {
+      console.error("❌ Error al desplegar:", err);
+    }
+  };
 
   return (
     <button
