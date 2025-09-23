@@ -6,13 +6,16 @@ const deployContract = async () => {
   if (!tonConnectUI) return;
 
   try {
+    // Debes usar tu propia dirección de wallet aquí
+    const walletAddress = await tonConnectUI.getAddress(); // dirección de tu wallet conectada
+
     const tx = await tonConnectUI.sendTransaction({
       validUntil: Math.floor(Date.now() / 1000) + 300,
       messages: [
         {
+          address: walletAddress, // ⚠️ enviamos a nuestra propia wallet
           amount: "2000000000",
           payload: CONTRACT_CODE_B64,
-          // NO address al desplegar
         },
       ],
     });
@@ -27,7 +30,6 @@ const deployContract = async () => {
     console.error("❌ Error al desplegar:", err);
   }
 };
-
 
   return (
     <button
