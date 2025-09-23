@@ -15,7 +15,7 @@ export default function App() {
   }, []);
 
   return (
-    <div>
+    <div className='mx-auto text-neonBlue'>
       <div id="ton-connect-button"></div>
       {wallet && <button>Pagar Ahora</button>}
     </div>
