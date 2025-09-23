@@ -11,14 +11,9 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
   const [image, setImage] = useState(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [txHash, setTxHash] = useState('');
+  const [contractAddress, setContractAddress] = useState('');
 
-  const handlePaymentSuccess = (boc) => {
-    setTxHash(boc);
-    setPaymentConfirmed(true);
-    saveToken();
-  };
-
-  const saveToken = async () => {
+  const saveToken = async (address, hash) => {
     const { error } = await supabase.from('tokens').insert([{
       name,
       symbol,
@@ -26,10 +21,17 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
       decimals,
       image_url: image ? URL.createObjectURL(image) : null,
       owner_wallet: wallet || "WALLET_CONECTADA",
-      contract_address: "0:SIMULADO",
+      contract_address: address,
       liquidity_added: false
     }]);
     if (error) console.error(error);
+  };
+
+  const handleDeployed = ({ txHash, contractAddress }) => {
+    setTxHash(txHash);
+    setContractAddress(contractAddress);
+    setPaymentConfirmed(true);
+    saveToken(contractAddress, txHash);
   };
 
   return (
@@ -38,90 +40,64 @@ export default function CreateTokenForm({ wallet, tonConnectUI }) {
         🚀 Crear Token TON
       </h2>
 
-      {/* Nombre */}
-      <input
-        className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonBlue text-white focus:ring-2 focus:ring-neonBlue"
+      {/* Inputs */}
+      <input className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonBlue text-white focus:ring-2 focus:ring-neonBlue"
         placeholder="Nombre del token"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
-      {/* Símbolo */}
-      <input
-        className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonPurple text-white focus:ring-2 focus:ring-neonPurple"
+      <input className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonPurple text-white focus:ring-2 focus:ring-neonPurple"
         placeholder="Símbolo (ej: TON)"
         value={symbol}
         onChange={(e) => setSymbol(e.target.value.toUpperCase())}
         maxLength={10}
       />
 
-      {/* Cantidad total */}
-      <input
-        type="number"
-        min="1"
-        step="1"
+      <input type="number" min="1" step="1"
         className="w-full p-3 mb-3 rounded-xl bg-black/60 border border-gray-600 placeholder-neonGreen text-white focus:ring-2 focus:ring-neonGreen"
         placeholder="Cantidad total"
         value={supply}
         onChange={(e) => setSupply(e.target.value.replace(/[^0-9]/g, ''))}
       />
 
-      {/* Decimales */}
-      <input
-        type="number"
-        min="0"
-        max="18"
+      <input type="number" min="0" max="18"
         className="w-full p-3 mb-4 rounded-xl bg-black/60 border border-gray-600 placeholder-white text-white focus:ring-2 focus:ring-neonBlue"
         placeholder="Decimales (ej: 9)"
         value={decimals}
         onChange={(e) => setDecimals(e.target.value.replace(/[^0-9]/g, ''))}
       />
 
-      {/* Imagen del token */}
+      {/* Imagen */}
       <div className="mb-4">
         {!image ? (
           <label className="block w-full p-3 text-center rounded-xl border-2 border-dashed border-gray-500 text-gray-400 cursor-pointer hover:border-neonBlue hover:text-neonBlue transition">
             📷 Subir imagen del token
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => setImage(e.target.files[0])}
-            />
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => setImage(e.target.files[0])} />
           </label>
         ) : (
           <div className="relative w-24 h-24 mx-auto">
-            <img
-              src={URL.createObjectURL(image)}
-              alt="Preview"
-              className="w-24 h-24 object-cover rounded-xl border border-gray-600 shadow-lg"
-            />
-            <button
-              onClick={() => setImage(null)}
-              className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow-md"
-            >
+            <img src={URL.createObjectURL(image)} alt="Preview"
+              className="w-24 h-24 object-cover rounded-xl border border-gray-600 shadow-lg" />
+            <button onClick={() => setImage(null)}
+              className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow-md">
               <X size={14} />
             </button>
           </div>
         )}
       </div>
 
-      {/* Wallet + pago */}
+      {/* Botón / estado */}
       <div className="flex flex-col items-center">
         {wallet && !paymentConfirmed && tonConnectUI && (
-          <TonConnectWrapper
-            toWallet="DIRECCION_DEL_RECIBO"
-            amountNano={3e9}
-            memo={`Pago token ${name || 'SIN-NOMBRE'}`}
-            onPaid={handlePaymentSuccess}
-            tonConnectUI={tonConnectUI}
-          />
+          <TonConnectWrapper tonConnectUI={tonConnectUI} onDeployed={handleDeployed} />
         )}
 
         {paymentConfirmed && (
           <p className="text-neonGreen font-orbitron text-center mt-4">
-            ✅ Pago confirmado – Smart Contract desplegado <br />
-            <span className="text-xs break-all">{txHash}</span>
+            ✅ Token desplegado<br />
+            Dirección: {contractAddress}<br />
+            TxHash: {txHash}
           </p>
         )}
       </div>
